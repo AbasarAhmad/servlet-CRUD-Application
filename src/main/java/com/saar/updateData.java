@@ -8,37 +8,30 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-//@WebServlet("/insertData")
-public class addData extends HttpServlet  {
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws  ServletException, IOException
-	{
-		PrintWriter pw=res.getWriter();
-		
+public class updateData extends HttpServlet {
+	
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String roll=req.getParameter("rollNumber");
 		String name=req.getParameter("name");
 		String branch=req.getParameter("branch");
-		
 		int rollNumber=Integer.parseInt(roll);
-		String sql = "insert into student values(?,?,?)";
+		String sql="update student set name=?, branch=? where rollNumber=?";
 		
 		try {
-			//load driver
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			// We make connection
-			Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/ducat","root","Riyaz@31200");
-			PreparedStatement ps=connection.prepareStatement(sql);
-			ps.setInt(1, rollNumber);
-			ps.setString(2, name);
-			ps.setString(3, branch);
-			ps.executeUpdate();
-			pw.println("<h1>Your data is recorded</h1>");
-			ps.close();
+			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/ducat","root","Riyaz@31200");
+			PreparedStatement ps=conn.prepareStatement(sql);
+				ps.setInt(1,rollNumber);
+				ps.setString(2,name);
+				ps.setString(2,branch);
+				ps.executeUpdate();
+				conn.close();
+				ps.close();
 		}
 		catch(ClassNotFoundException e)
 		{
@@ -49,6 +42,11 @@ public class addData extends HttpServlet  {
 		{
 			e.printStackTrace();
 		}
+		PrintWriter pw=resp.getWriter();
+//		pw.append("<h1 style=\"background-color: red; color: white; text-align: center;\">Student Data has deleted </h1>");
+		pw.println("<h1>Your data is updated</h1>");
+		
 		
 	}
+
 }
